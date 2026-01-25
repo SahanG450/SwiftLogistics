@@ -8,9 +8,6 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install --production
 
-# Copy shared utilities
-COPY ../../shared /app/shared
-
 # Copy source code
 COPY src ./src
 

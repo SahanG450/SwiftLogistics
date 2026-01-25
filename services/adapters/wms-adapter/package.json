@@ -1,0 +1,21 @@
+{
+  "name": "swiftlogistics-wms-adapter",
+  "version": "1.0.0",
+  "description": "WMS Adapter for SwiftLogistics - TCP Socket Protocol Translator",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "keywords": ["adapter", "tcp", "wms", "rabbitmq"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "amqplib": "^0.10.3",
+    "dotenv": "^16.3.1",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

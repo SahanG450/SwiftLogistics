@@ -1,0 +1,24 @@
+{
+  "name": "swiftlogistics-cms-adapter",
+  "version": "1.0.0",
+  "description": "CMS Adapter for SwiftLogistics - SOAP/XML Protocol Translator",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "keywords": ["adapter", "soap", "cms", "rabbitmq"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "soap": "^1.0.0",
+    "amqplib": "^0.10.3",
+    "axios": "^1.6.2",
+    "xml2js": "^0.6.2",
+    "dotenv": "^16.3.1",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
