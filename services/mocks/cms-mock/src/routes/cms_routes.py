@@ -64,5 +64,5 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "CMS Mock Service",
-        "total_customers": len(cms_service.customers),
+        "total_customers": len(cms_service.storage.get_all()),
     }

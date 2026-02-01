@@ -25,9 +25,9 @@ start_service() {
 }
 
 # Start each service
-start_service "$BASE_DIR/services/mocks/cms-mock-python" "CMS Mock Service"
-start_service "$BASE_DIR/services/mocks/ros-mock-python" "ROS Mock Service"
-start_service "$BASE_DIR/services/mocks/wms-mock-python" "WMS Mock Service"
+start_service "$BASE_DIR/services/mocks/cms-mock" "CMS Mock Service"
+start_service "$BASE_DIR/services/mocks/ros-mock" "ROS Mock Service"
+start_service "$BASE_DIR/services/mocks/wms-mock" "WMS Mock Service"
 
 echo ""
 echo "All Python mock services started!"

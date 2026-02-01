@@ -9,7 +9,7 @@ Route Optimization System Mock Service for Swift Logistics.
 - Distance and duration calculation
 - Route status management
 - FastAPI with automatic API documentation
-- In-memory data storage
+- File-based JSON data storage (persists across restarts)
 
 ## Installation
 
@@ -56,3 +56,30 @@ Once running, visit:
 - `HOST` - Server host (default: 0.0.0.0)
 - `PORT` - Server port (default: 3002)
 - `DEBUG` - Debug mode (default: true)
+
+## Data Storage
+
+Route data is persisted to `data/routes.json`. 
+
+### View Data
+```bash
+cat data/routes.json | jq
+```
+
+### Reset Data
+```bash
+# Delete the JSON file - it will be recreated with mock data on next startup
+rm data/routes.json
+```
+
+### Backup Data
+```bash
+# Backup route data
+cp data/routes.json ~/backup/routes-$(date +%Y%m%d).json
+```
+
+## Sample Data
+
+On first run, the service initializes with 2 mock routes:
+- New York, NY → Boston, MA (with stop in Hartford, CT)
+- Los Angeles, CA → San Francisco, CA

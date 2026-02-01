@@ -20,8 +20,8 @@ stop_service() {
 }
 
 # Stop each service
-stop_service "$BASE_DIR/services/mocks/cms-mock-python" "CMS Mock Service"
-stop_service "$BASE_DIR/services/mocks/ros-mock-python" "ROS Mock Service"
-stop_service "$BASE_DIR/services/mocks/wms-mock-python" "WMS Mock Service"
+stop_service "$BASE_DIR/services/mocks/cms-mock" "CMS Mock Service"
+stop_service "$BASE_DIR/services/mocks/ros-mock" "ROS Mock Service"
+stop_service "$BASE_DIR/services/mocks/wms-mock" "WMS Mock Service"
 
 echo "All Python mock services stopped!"

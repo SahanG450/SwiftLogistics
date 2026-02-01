@@ -131,3 +131,7 @@ dmypy.json
 # OS
 .DS_Store
 Thumbs.db
+
+# Data files (JSON storage)
+data/*.json
+!data/.gitkeep

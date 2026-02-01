@@ -7,7 +7,7 @@ Customer Management System Mock Service for Swift Logistics.
 - Customer CRUD operations
 - Customer status management
 - FastAPI with automatic API documentation
-- In-memory data storage
+- File-based JSON data storage (persists across restarts)
 
 ## Installation
 
@@ -53,3 +53,30 @@ Once running, visit:
 - `HOST` - Server host (default: 0.0.0.0)
 - `PORT` - Server port (default: 3001)
 - `DEBUG` - Debug mode (default: true)
+
+## Data Storage
+
+Customer data is persisted to `data/customers.json`. 
+
+### View Data
+```bash
+cat data/customers.json | jq
+```
+
+### Reset Data
+```bash
+# Delete the JSON file - it will be recreated with mock data on next startup
+rm data/customers.json
+```
+
+### Backup Data
+```bash
+# Backup customer data
+cp data/customers.json ~/backup/customers-$(date +%Y%m%d).json
+```
+
+## Sample Data
+
+On first run, the service initializes with 2 mock customers:
+- John Doe (Tech Corp)
+- Jane Smith (Retail Inc)

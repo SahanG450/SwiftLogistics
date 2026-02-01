@@ -80,5 +80,5 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "ROS Mock Service",
-        "total_routes": len(ros_service.routes),
+        "total_routes": len(ros_service.storage.get_all()),
     }

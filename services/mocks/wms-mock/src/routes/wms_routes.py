@@ -89,5 +89,5 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "WMS Mock Service",
-        "total_items": len(wms_handler.inventory),
+        "total_items": len(wms_handler.storage.get_all()),
     }
