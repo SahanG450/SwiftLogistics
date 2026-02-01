@@ -4,12 +4,14 @@ import uvicorn
 
 from src.config.settings import settings
 from src.routes.wms_routes import router as wms_router
+from src.routes.package_routes import router as package_router
+from src.services.package_service import PackageService
 
 # Create FastAPI application
 app = FastAPI(
     title=settings.app_name,
-    description="Warehouse Management System Mock Service for Swift Logistics",
-    version="1.0.0",
+    description="Warehouse Management System Mock Service for Swift Logistics - Package tracking from receipt to loading",
+    version="2.0.0",
     redoc_url=None,  # Disable ReDoc, use Swagger UI only
 )
 
@@ -24,18 +26,38 @@ app.add_middleware(
 
 # Include routers
 app.include_router(wms_router)
+app.include_router(package_router)
 
 
 @app.get("/")
 async def root():
-    """Root endpoint"""
-    return {"service": settings.app_name, "status": "running", "version": "1.0.0"}
+    """Root endpoint - WMS Service Information"""
+    return {
+        "service": settings.app_name,
+        "description": "Warehouse Management System - Package tracking from receipt to loading",
+        "status": "running",
+        "version": "2.0.0",
+        "capabilities": [
+            "Package Receiving",
+            "Quality Inspection",
+            "Warehouse Storage",
+            "Package Tracking",
+            "Vehicle Loading"
+        ]
+    }
 
 
 @app.get("/health")
 async def health():
-    """Health check endpoint"""
-    return {"status": "healthy", "service": settings.app_name}
+    """Health check endpoint with package counts"""
+    package_service = PackageService()
+    
+    return {
+        "status": "healthy",
+        "service": settings.app_name,
+        "version": "2.0.0",
+        "package_count": len(package_service.storage.get_all())
+    }
 
 
 if __name__ == "__main__":
