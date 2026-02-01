@@ -1,7 +1,14 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import List, Optional
 
-from ..models.schemas import Order, OrderCreate, OrderUpdate, OrderStatus, ProofOfDelivery, DeliveryFailureReason
+from ..models.schemas import (
+    Order,
+    OrderCreate,
+    OrderUpdate,
+    OrderStatus,
+    ProofOfDelivery,
+    DeliveryFailureReason,
+)
 from ..services.order_service import OrderService
 
 router = APIRouter(prefix="/api/orders", tags=["Orders"])
@@ -26,7 +33,9 @@ async def get_order(order_id: str):
     """Get a specific order by ID"""
     order = order_service.get_order(order_id)
     if not order:
-        raise HTTPException(status_code=404, detail=f"Order with ID {order_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Order with ID {order_id} not found"
+        )
     return order
 
 
@@ -41,7 +50,9 @@ async def update_order(order_id: str, order: OrderUpdate):
     """Update an existing order"""
     updated_order = order_service.update_order(order_id, order)
     if not updated_order:
-        raise HTTPException(status_code=404, detail=f"Order with ID {order_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Order with ID {order_id} not found"
+        )
     return updated_order
 
 
@@ -49,7 +60,9 @@ async def update_order(order_id: str, order: OrderUpdate):
 async def delete_order(order_id: str):
     """Delete an order"""
     if not order_service.delete_order(order_id):
-        raise HTTPException(status_code=404, detail=f"Order with ID {order_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Order with ID {order_id} not found"
+        )
 
 
 @router.post("/{order_id}/assign-driver", response_model=Order)
@@ -61,7 +74,9 @@ async def assign_driver(
     """Assign an order to a driver (and optionally a route)"""
     order = order_service.assign_to_driver(order_id, driver_id, route_id)
     if not order:
-        raise HTTPException(status_code=404, detail=f"Order with ID {order_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Order with ID {order_id} not found"
+        )
     return order
 
 
@@ -70,7 +85,9 @@ async def mark_delivered(order_id: str, proof: ProofOfDelivery):
     """Mark an order as delivered with proof of delivery"""
     order = order_service.mark_as_delivered(order_id, proof.model_dump())
     if not order:
-        raise HTTPException(status_code=404, detail=f"Order with ID {order_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Order with ID {order_id} not found"
+        )
     return order
 
 
@@ -83,7 +100,9 @@ async def mark_failed(
     """Mark an order as failed with reason"""
     order = order_service.mark_as_failed(order_id, reason, notes)
     if not order:
-        raise HTTPException(status_code=404, detail=f"Order with ID {order_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Order with ID {order_id} not found"
+        )
     return order
 
 

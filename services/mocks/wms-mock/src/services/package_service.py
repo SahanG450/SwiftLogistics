@@ -42,7 +42,9 @@ class PackageService:
         self.tracking_counter += 1
         return tracking_num
 
-    def _add_event(self, events: List[dict], event_type: str, notes: Optional[str] = None) -> List[dict]:
+    def _add_event(
+        self, events: List[dict], event_type: str, notes: Optional[str] = None
+    ) -> List[dict]:
         """Add an event to package history"""
         event = {
             "event_type": event_type,
@@ -73,7 +75,7 @@ class PackageService:
                     "aisle": "12",
                     "rack": "R5",
                     "shelf": "S3",
-                    "bin": "B02"
+                    "bin": "B02",
                 },
                 "weight": 0.5,
                 "dimensions": "15x8x2 cm",
@@ -89,22 +91,22 @@ class PackageService:
                         "timestamp": "2026-02-01T08:30:00.000000",
                         "location": "Receiving Dock A",
                         "performed_by": "WH-STAFF-01",
-                        "notes": "Package received from Daraz Lanka"
+                        "notes": "Package received from Daraz Lanka",
                     },
                     {
                         "event_type": "inspected",
                         "timestamp": "2026-02-01T08:45:00.000000",
                         "location": "Inspection Area",
                         "performed_by": "QC-STAFF-02",
-                        "notes": "Quality check passed - good condition"
+                        "notes": "Quality check passed - good condition",
                     },
                     {
                         "event_type": "stored",
                         "timestamp": "2026-02-01T09:15:00.000000",
                         "location": "ZONE-A-R5-S3-B02",
                         "performed_by": "WH-STAFF-03",
-                        "notes": "Stored in warehouse location"
-                    }
+                        "notes": "Stored in warehouse location",
+                    },
                 ],
                 "notes": None,
                 "created_at": datetime.now().isoformat(),
@@ -136,7 +138,7 @@ class PackageService:
                         "timestamp": "2026-02-01T10:00:00.000000",
                         "location": "Receiving Dock B",
                         "performed_by": "WH-STAFF-04",
-                        "notes": "Package received from Kapruka.com"
+                        "notes": "Package received from Kapruka.com",
                     }
                 ],
                 "notes": "Priority delivery for Avurudu",
@@ -150,10 +152,12 @@ class PackageService:
     def create_package(self, package_data: PackageCreate) -> Package:
         """Create a new package (receive from client)"""
         package_id = str(uuid.uuid4())
-        tracking_number = package_data.tracking_number or self._generate_tracking_number()
+        tracking_number = (
+            package_data.tracking_number or self._generate_tracking_number()
+        )
 
         now = datetime.now().isoformat()
-        
+
         # Initial event
         events = [
             {
@@ -261,35 +265,45 @@ class PackageService:
         self, package_id: str, location: dict, notes: Optional[str] = None
     ) -> Optional[Package]:
         """Store package in warehouse location"""
-        update = PackageUpdate(status=PackageStatus.STORED, location=location, notes=notes)
+        update = PackageUpdate(
+            status=PackageStatus.STORED, location=location, notes=notes
+        )
         return self.update_package(package_id, update)
 
-    def pick_package(self, package_id: str, notes: Optional[str] = None) -> Optional[Package]:
+    def pick_package(
+        self, package_id: str, notes: Optional[str] = None
+    ) -> Optional[Package]:
         """Pick package for delivery preparation"""
         update = PackageUpdate(status=PackageStatus.PICKED, notes=notes)
         return self.update_package(package_id, update)
 
     def load_package(
-        self, package_id: str, vehicle_id: str, driver_id: str, notes: Optional[str] = None
+        self,
+        package_id: str,
+        vehicle_id: str,
+        driver_id: str,
+        notes: Optional[str] = None,
     ) -> Optional[Package]:
         """Load package onto vehicle"""
         now = datetime.now().isoformat()
-        
+
         existing = self.storage.get(package_id)
         if not existing:
             return None
-            
+
         existing["status"] = PackageStatus.LOADED
         existing["assigned_vehicle_id"] = vehicle_id
         existing["assigned_driver_id"] = driver_id
         existing["loaded_at"] = now
         existing["updated_at"] = now
-        
+
         # Add event
         events = existing.get("events", [])
-        events = self._add_event(events, "loaded", notes or f"Loaded to vehicle {vehicle_id}")
+        events = self._add_event(
+            events, "loaded", notes or f"Loaded to vehicle {vehicle_id}"
+        )
         existing["events"] = events
-        
+
         self.storage.update(package_id, existing)
         return Package(**existing)
 

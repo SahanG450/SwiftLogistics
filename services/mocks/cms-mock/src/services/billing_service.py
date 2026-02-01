@@ -17,7 +17,7 @@ class BillingService:
         invoices = self.storage.get_all()
         if not invoices:
             return 10001
-        
+
         max_num = 10001
         for invoice in invoices.values():
             try:
@@ -95,16 +95,19 @@ class BillingService:
             self.storage.create(invoice2_id, invoice2)
 
     def create_invoice(
-        self, billing_data: BillingCreate, base_rate: float = 250.0, volume_discount: float = 0.0
+        self,
+        billing_data: BillingCreate,
+        base_rate: float = 250.0,
+        volume_discount: float = 0.0,
     ) -> BillingInvoice:
         """Create a new billing invoice"""
         invoice_id = str(uuid.uuid4())
         invoice_number = self._generate_invoice_number()
-        
+
         total_amount = self._calculate_billing_amount(
             base_rate, billing_data.total_deliveries, volume_discount
         )
-        
+
         now = datetime.now().isoformat()
         invoice_dict = {
             "id": invoice_id,
@@ -141,7 +144,9 @@ class BillingService:
         if client_id:
             invoice_list = [i for i in invoice_list if i.client_id == client_id]
         if payment_status:
-            invoice_list = [i for i in invoice_list if i.payment_status == payment_status]
+            invoice_list = [
+                i for i in invoice_list if i.payment_status == payment_status
+            ]
 
         return invoice_list
 
@@ -174,7 +179,7 @@ class BillingService:
             return None
 
         new_paid_amount = invoice.paid_amount + payment_amount
-        
+
         # Determine payment status
         if new_paid_amount >= invoice.total_amount:
             payment_status = "paid"
@@ -186,7 +191,7 @@ class BillingService:
         update = BillingUpdate(
             paid_amount=new_paid_amount,
             payment_status=payment_status,
-            payment_date=payment_date or datetime.now().isoformat()
+            payment_date=payment_date or datetime.now().isoformat(),
         )
-        
+
         return self.update_invoice(invoice_id, update)

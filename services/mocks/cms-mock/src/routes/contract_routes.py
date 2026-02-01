@@ -11,7 +11,9 @@ contract_service = ContractService()
 @router.get("/", response_model=List[Contract])
 async def get_all_contracts(
     client_id: Optional[str] = Query(None, description="Filter by client ID"),
-    status: Optional[ContractStatus] = Query(None, description="Filter by contract status"),
+    status: Optional[ContractStatus] = Query(
+        None, description="Filter by contract status"
+    ),
 ):
     """Get all contracts with optional filtering"""
     return contract_service.get_all_contracts(client_id=client_id, status=status)

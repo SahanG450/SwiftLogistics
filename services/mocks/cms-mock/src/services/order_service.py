@@ -17,7 +17,7 @@ class OrderService:
         orders = self.storage.get_all()
         if not orders:
             return 1000
-        
+
         # Extract numbers from existing order numbers (format: ORD-YYYY-NNNN)
         max_num = 1000
         for order in orders.values():
@@ -54,7 +54,7 @@ class OrderService:
                     "province": "Western",
                     "country": "Sri Lanka",
                     "contact_name": "Nimal Perera",
-                    "contact_phone": "+94771234567"
+                    "contact_phone": "+94771234567",
                 },
                 "items": [
                     {
@@ -62,7 +62,7 @@ class OrderService:
                         "description": "Samsung Galaxy S24",
                         "quantity": 1,
                         "weight": 0.5,
-                        "value": 185000.0
+                        "value": 185000.0,
                     }
                 ],
                 "status": "ready_for_delivery",
@@ -93,7 +93,7 @@ class OrderService:
                     "province": "Central",
                     "country": "Sri Lanka",
                     "contact_name": "Sunil Fernando",
-                    "contact_phone": "+94712345678"
+                    "contact_phone": "+94712345678",
                 },
                 "items": [
                     {
@@ -101,7 +101,7 @@ class OrderService:
                         "description": "Avurudu Gift Basket",
                         "quantity": 2,
                         "weight": 3.5,
-                        "value": 8500.0
+                        "value": 8500.0,
                     }
                 ],
                 "status": "pending",
@@ -125,7 +125,7 @@ class OrderService:
         """Create a new order"""
         order_id = str(uuid.uuid4())
         order_number = self._generate_order_number()
-        
+
         now = datetime.now().isoformat()
         order_dict = {
             "id": order_id,
@@ -202,8 +202,7 @@ class OrderService:
     ) -> Optional[Order]:
         """Mark order as delivered with proof"""
         update = OrderUpdate(
-            status=OrderStatus.DELIVERED,
-            proof_of_delivery=proof_of_delivery
+            status=OrderStatus.DELIVERED, proof_of_delivery=proof_of_delivery
         )
         return self.update_order(order_id, update)
 
@@ -214,7 +213,7 @@ class OrderService:
         update = OrderUpdate(
             status=OrderStatus.FAILED,
             failure_reason=failure_reason,
-            failure_notes=failure_notes
+            failure_notes=failure_notes,
         )
         return self.update_order(order_id, update)
 
@@ -225,6 +224,6 @@ class OrderService:
         update = OrderUpdate(
             assigned_driver_id=driver_id,
             assigned_route_id=route_id,
-            status=OrderStatus.OUT_FOR_DELIVERY
+            status=OrderStatus.OUT_FOR_DELIVERY,
         )
         return self.update_order(order_id, update)

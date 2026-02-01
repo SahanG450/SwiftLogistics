@@ -126,12 +126,16 @@ class OptimizedRoute(BaseModel):
 
 @router.get("/", response_model=List[Package])
 async def get_all_packages(
-    status: Optional[PackageStatus] = Query(None, description="Filter by package status"),
+    status: Optional[PackageStatus] = Query(
+        None, description="Filter by package status"
+    ),
     client_id: Optional[str] = Query(None, description="Filter by client ID"),
     order_id: Optional[str] = Query(None, description="Filter by order ID"),
 ):
     """Get all packages with optional filtering"""
-    return package_service.get_all_packages(status=status, client_id=client_id, order_id=order_id)
+    return package_service.get_all_packages(
+        status=status, client_id=client_id, order_id=order_id
+    )
 
 
 @router.get("/{package_id}", response_model=Package)
@@ -139,7 +143,9 @@ async def get_package(package_id: str):
     """Get a specific package by ID"""
     package = package_service.get_package(package_id)
     if not package:
-        raise HTTPException(status_code=404, detail=f"Package with ID {package_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Package with ID {package_id} not found"
+        )
     return package
 
 
@@ -149,7 +155,8 @@ async def get_package_by_tracking(tracking_number: str):
     package = package_service.get_package_by_tracking(tracking_number)
     if not package:
         raise HTTPException(
-            status_code=404, detail=f"Package with tracking number {tracking_number} not found"
+            status_code=404,
+            detail=f"Package with tracking number {tracking_number} not found",
         )
     return package
 
@@ -165,7 +172,9 @@ async def update_package(package_id: str, package: PackageUpdate):
     """Update an existing package"""
     updated_package = package_service.update_package(package_id, package)
     if not updated_package:
-        raise HTTPException(status_code=404, detail=f"Package with ID {package_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Package with ID {package_id} not found"
+        )
     return updated_package
 
 
@@ -173,19 +182,25 @@ async def update_package(package_id: str, package: PackageUpdate):
 async def delete_package(package_id: str):
     """Delete a package"""
     if not package_service.delete_package(package_id):
-        raise HTTPException(status_code=404, detail=f"Package with ID {package_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Package with ID {package_id} not found"
+        )
 
 
 @router.post("/{package_id}/inspect", response_model=Package)
 async def inspect_package(
     package_id: str,
-    condition: PackageCondition = Query(..., description="Package condition after inspection"),
+    condition: PackageCondition = Query(
+        ..., description="Package condition after inspection"
+    ),
     notes: Optional[str] = Query(None, description="Inspection notes"),
 ):
     """Inspect a package (quality check)"""
     package = package_service.inspect_package(package_id, condition, notes)
     if not package:
-        raise HTTPException(status_code=404, detail=f"Package with ID {package_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Package with ID {package_id} not found"
+        )
     return package
 
 
@@ -194,7 +209,9 @@ async def store_package(package_id: str, location: PackageLocation):
     """Store package in warehouse location"""
     package = package_service.store_package(package_id, location.model_dump())
     if not package:
-        raise HTTPException(status_code=404, detail=f"Package with ID {package_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Package with ID {package_id} not found"
+        )
     return package
 
 
@@ -205,7 +222,9 @@ async def pick_package(
     """Pick package for delivery preparation"""
     package = package_service.pick_package(package_id, notes)
     if not package:
-        raise HTTPException(status_code=404, detail=f"Package with ID {package_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Package with ID {package_id} not found"
+        )
     return package
 
 
@@ -219,7 +238,9 @@ async def load_package(
     """Load package onto vehicle for delivery"""
     package = package_service.load_package(package_id, vehicle_id, driver_id, notes)
     if not package:
-        raise HTTPException(status_code=404, detail=f"Package with ID {package_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Package with ID {package_id} not found"
+        )
     return package
 
 

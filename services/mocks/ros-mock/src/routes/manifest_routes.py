@@ -17,8 +17,12 @@ manifest_service = ManifestService()
 @router.get("/", response_model=List[DeliveryManifest])
 async def get_all_manifests(
     driver_id: Optional[str] = Query(None, description="Filter by driver ID"),
-    status: Optional[ManifestStatus] = Query(None, description="Filter by manifest status"),
-    delivery_date: Optional[str] = Query(None, description="Filter by delivery date (YYYY-MM-DD)"),
+    status: Optional[ManifestStatus] = Query(
+        None, description="Filter by manifest status"
+    ),
+    delivery_date: Optional[str] = Query(
+        None, description="Filter by delivery date (YYYY-MM-DD)"
+    ),
 ):
     """Get all delivery manifests with optional filtering"""
     return manifest_service.get_all_manifests(

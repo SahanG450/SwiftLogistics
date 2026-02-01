@@ -17,7 +17,7 @@ class ContractService:
         contracts = self.storage.get_all()
         if not contracts:
             return 5001
-        
+
         max_num = 5001
         for contract in contracts.values():
             try:
@@ -83,7 +83,7 @@ class ContractService:
         """Create a new contract"""
         contract_id = str(uuid.uuid4())
         contract_number = self._generate_contract_number()
-        
+
         now = datetime.now().isoformat()
         contract_dict = {
             "id": contract_id,

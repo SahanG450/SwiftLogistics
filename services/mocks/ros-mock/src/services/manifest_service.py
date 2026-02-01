@@ -65,7 +65,7 @@ class ManifestService:
                         "priority": "normal",
                         "special_instructions": "Fragile - Handle with care",
                         "estimated_delivery_time": "2026-02-02T10:30:00",
-                        "status": "pending"
+                        "status": "pending",
                     },
                     {
                         "order_id": "order-003",
@@ -78,8 +78,8 @@ class ManifestService:
                         "priority": "high",
                         "special_instructions": None,
                         "estimated_delivery_time": "2026-02-02T11:15:00",
-                        "status": "pending"
-                    }
+                        "status": "pending",
+                    },
                 ],
                 "delivery_date": "2026-02-02",
                 "status": "assigned",
@@ -141,7 +141,9 @@ class ManifestService:
         if status:
             manifest_list = [m for m in manifest_list if m.status == status]
         if delivery_date:
-            manifest_list = [m for m in manifest_list if m.delivery_date == delivery_date]
+            manifest_list = [
+                m for m in manifest_list if m.delivery_date == delivery_date
+            ]
 
         return manifest_list
 
@@ -173,16 +175,14 @@ class ManifestService:
     def start_manifest(self, manifest_id: str) -> Optional[DeliveryManifest]:
         """Start manifest delivery"""
         update = ManifestUpdate(
-            status=ManifestStatus.IN_PROGRESS,
-            started_at=datetime.now().isoformat()
+            status=ManifestStatus.IN_PROGRESS, started_at=datetime.now().isoformat()
         )
         return self.update_manifest(manifest_id, update)
 
     def complete_manifest(self, manifest_id: str) -> Optional[DeliveryManifest]:
         """Complete manifest"""
         update = ManifestUpdate(
-            status=ManifestStatus.COMPLETED,
-            completed_at=datetime.now().isoformat()
+            status=ManifestStatus.COMPLETED, completed_at=datetime.now().isoformat()
         )
         return self.update_manifest(manifest_id, update)
 

@@ -14,7 +14,9 @@ async def get_all_invoices(
     payment_status: Optional[str] = Query(None, description="Filter by payment status"),
 ):
     """Get all billing invoices with optional filtering"""
-    return billing_service.get_all_invoices(client_id=client_id, payment_status=payment_status)
+    return billing_service.get_all_invoices(
+        client_id=client_id, payment_status=payment_status
+    )
 
 
 @router.get("/{invoice_id}", response_model=BillingInvoice)

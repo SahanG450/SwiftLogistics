@@ -3,27 +3,30 @@
 ## 🚀 Quick Start
 
 ### Start All Services
+
 ```bash
 ./scripts/start-swift-logistics.sh
 ```
 
 ### Stop All Services
+
 ```bash
 ./scripts/stop-swift-logistics.sh
 ```
 
 ### Test All Services
+
 ```bash
 ./scripts/test-swift-logistics.sh
 ```
 
 ## 📋 Service Ports
 
-| Service | Port | Description |
-|---------|------|-------------|
+| Service  | Port | Description                                       |
+| -------- | ---- | ------------------------------------------------- |
 | CMS Mock | 3001 | Client Management System (Legacy SOAP simulation) |
-| WMS Mock | 3002 | Warehouse Management System |
-| ROS Mock | 3003 | Route Optimization System |
+| WMS Mock | 3002 | Warehouse Management System                       |
+| ROS Mock | 3003 | Route Optimization System                         |
 
 ## 🔗 API Documentation
 
@@ -34,7 +37,9 @@
 ## 📦 Key Features by Service
 
 ### CMS Mock (Port 3001)
+
 **Order Management**
+
 - `POST /api/orders/` - Submit new order (Order Intake)
 - `GET /api/orders/` - List all orders
 - `GET /api/orders/{id}` - Get order details
@@ -43,17 +48,21 @@
 - `POST /api/orders/{id}/mark-failed` - Mark failed with reason
 
 **Contract Management**
+
 - `POST /api/contracts/` - Create client contract
 - `GET /api/contracts/` - List all contracts
 - `POST /api/contracts/{id}/activate` - Activate contract
 
 **Billing & Invoicing**
+
 - `POST /api/billing/` - Create invoice
 - `GET /api/billing/` - List invoices
 - `POST /api/billing/{id}/record-payment` - Record payment
 
 ### WMS Mock (Port 3002)
+
 **Package Tracking**
+
 - `POST /api/packages/` - Receive package from client
 - `GET /api/packages/tracking/{number}` - Track by tracking number
 - `POST /api/packages/{id}/inspect` - Quality inspection
@@ -62,7 +71,9 @@
 - `POST /api/packages/{id}/load` - Load onto vehicle
 
 ### ROS Mock (Port 3003)
+
 **Delivery Manifests**
+
 - `POST /api/manifests/` - Create delivery manifest
 - `GET /api/manifests/?driver_id={id}` - Get driver's manifest
 - `POST /api/manifests/{id}/start` - Driver starts route
@@ -72,6 +83,7 @@
 ## 🔄 Typical Workflow
 
 ### 1. Client Submits Order
+
 ```bash
 curl -X POST http://localhost:3001/api/orders/ \
   -H "Content-Type: application/json" \
@@ -99,6 +111,7 @@ curl -X POST http://localhost:3001/api/orders/ \
 ```
 
 ### 2. Warehouse Receives Package
+
 ```bash
 curl -X POST http://localhost:3002/api/packages/ \
   -H "Content-Type: application/json" \
@@ -113,6 +126,7 @@ curl -X POST http://localhost:3002/api/packages/ \
 ```
 
 ### 3. Inspect and Store Package
+
 ```bash
 # Inspect
 curl -X POST "http://localhost:3002/api/packages/{id}/inspect?condition=good&notes=Quality+check+passed"
@@ -129,6 +143,7 @@ curl -X POST http://localhost:3002/api/packages/{id}/store \
 ```
 
 ### 4. Create Delivery Manifest
+
 ```bash
 curl -X POST http://localhost:3003/api/manifests/ \
   -H "Content-Type: application/json" \
@@ -152,6 +167,7 @@ curl -X POST http://localhost:3003/api/manifests/ \
 ```
 
 ### 5. Driver Starts Delivery
+
 ```bash
 # Driver starts manifest
 curl -X POST http://localhost:3003/api/manifests/{id}/start
@@ -168,6 +184,7 @@ curl -X POST http://localhost:3001/api/orders/{order_id}/mark-delivered \
 ```
 
 ### 6. Track Package
+
 ```bash
 # By tracking number
 curl http://localhost:3002/api/packages/tracking/SL100003
@@ -179,34 +196,41 @@ curl http://localhost:3001/api/orders/{order_id}
 ## 📊 Data Formats
 
 ### Order Numbers
+
 - Format: `ORD-YYYY-NNNN`
 - Example: `ORD-2026-1001`
 
 ### Tracking Numbers
+
 - Format: `SLNNNNNN`
 - Example: `SL100001`
 
 ### Manifest Numbers
+
 - Format: `MAN-YYYY-NNNN`
 - Example: `MAN-2026-2001`
 
 ### Contract Numbers
+
 - Format: `CON-NNNN`
 - Example: `CON-5001`
 
 ### Invoice Numbers
+
 - Format: `INV-YYYY-NNNNN`
 - Example: `INV-2026-10001`
 
 ## 🎯 SwiftTrack Platform Features
 
 ### Client Portal
+
 ✅ Submit orders
 ✅ Track deliveries in real-time
 ✅ View order history
 ✅ Check billing status
 
 ### Driver Mobile App
+
 ✅ View daily manifest
 ✅ See optimized route
 ✅ Mark deliveries as completed
@@ -216,21 +240,25 @@ curl http://localhost:3001/api/orders/{order_id}
 ## 🔍 Filter Examples
 
 ### Get Orders by Status
+
 ```bash
 curl "http://localhost:3001/api/orders/?status=ready_for_delivery"
 ```
 
 ### Get Orders by Client
+
 ```bash
 curl "http://localhost:3001/api/orders/?client_id=client-001"
 ```
 
 ### Get Driver's Manifest
+
 ```bash
 curl "http://localhost:3003/api/manifests/?driver_id=driver-001"
 ```
 
 ### Get Packages by Status
+
 ```bash
 curl "http://localhost:3002/api/packages/?status=stored"
 ```
@@ -245,14 +273,14 @@ curl "http://localhost:3002/api/packages/?status=stored"
 ## 📈 Order Status Flow
 
 ```
-pending → confirmed → processing → in_warehouse → 
+pending → confirmed → processing → in_warehouse →
 ready_for_delivery → out_for_delivery → delivered/failed
 ```
 
 ## 📦 Package Status Flow
 
 ```
-received → inspected → stored → picked → 
+received → inspected → stored → picked →
 packed → loaded → in_transit → delivered
 ```
 
@@ -265,6 +293,7 @@ draft → assigned → in_progress → completed
 ## 🔧 Troubleshooting
 
 ### Check Service Status
+
 ```bash
 curl http://localhost:3001/health
 curl http://localhost:3002/health
@@ -272,6 +301,7 @@ curl http://localhost:3003/health
 ```
 
 ### View Logs
+
 ```bash
 tail -f /tmp/cms-mock.log
 tail -f /tmp/wms-mock.log
@@ -279,6 +309,7 @@ tail -f /tmp/ros-mock.log
 ```
 
 ### Restart Services
+
 ```bash
 ./scripts/stop-swift-logistics.sh
 ./scripts/start-swift-logistics.sh
