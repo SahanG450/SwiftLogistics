@@ -17,7 +17,7 @@ NC='\033[0m'
 
 # Service details
 SERVICE_NAME="ROS Mock"
-SERVICE_URL="http://localhost:8002"
+SERVICE_URL="http://localhost:3002"
 HEALTH_ENDPOINT="$SERVICE_URL/health"
 
 # Test counters

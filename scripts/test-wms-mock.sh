@@ -17,7 +17,7 @@ NC='\033[0m'
 
 # Service details
 SERVICE_NAME="WMS Mock"
-SERVICE_URL="http://localhost:8003"
+SERVICE_URL="http://localhost:3003"
 HEALTH_ENDPOINT="$SERVICE_URL/health"
 
 # Test counters

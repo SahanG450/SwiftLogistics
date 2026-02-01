@@ -17,7 +17,7 @@ NC='\033[0m'
 
 # Service details
 SERVICE_NAME="CMS Mock"
-SERVICE_URL="http://localhost:8001"
+SERVICE_URL="http://localhost:3001"
 HEALTH_ENDPOINT="$SERVICE_URL/health"
 
 # Test counters
