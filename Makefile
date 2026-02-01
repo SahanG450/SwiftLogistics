@@ -16,7 +16,7 @@ up: ## Start all services
 up-build: ## Build and start all services
 	docker-compose up --build -d
 
-down: ## Stop all services
+down: ## Stop all semakervices
 	docker-compose down
 
 # Mock Services Commands
