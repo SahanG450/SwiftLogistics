@@ -56,20 +56,23 @@ Once running, visit:
 
 ## Data Storage
 
-Customer data is persisted to `data/customers.json`. 
+Customer data is persisted to `data/customers.json`.
 
 ### View Data
+
 ```bash
 cat data/customers.json | jq
 ```
 
 ### Reset Data
+
 ```bash
 # Delete the JSON file - it will be recreated with mock data on next startup
 rm data/customers.json
 ```
 
 ### Backup Data
+
 ```bash
 # Backup customer data
 cp data/customers.json ~/backup/customers-$(date +%Y%m%d).json
@@ -78,5 +81,6 @@ cp data/customers.json ~/backup/customers-$(date +%Y%m%d).json
 ## Sample Data
 
 On first run, the service initializes with 2 mock customers:
+
 - John Doe (Tech Corp)
 - Jane Smith (Retail Inc)

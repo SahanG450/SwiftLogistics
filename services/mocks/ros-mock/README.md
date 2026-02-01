@@ -59,20 +59,23 @@ Once running, visit:
 
 ## Data Storage
 
-Route data is persisted to `data/routes.json`. 
+Route data is persisted to `data/routes.json`.
 
 ### View Data
+
 ```bash
 cat data/routes.json | jq
 ```
 
 ### Reset Data
+
 ```bash
 # Delete the JSON file - it will be recreated with mock data on next startup
 rm data/routes.json
 ```
 
 ### Backup Data
+
 ```bash
 # Backup route data
 cp data/routes.json ~/backup/routes-$(date +%Y%m%d).json
@@ -81,5 +84,6 @@ cp data/routes.json ~/backup/routes-$(date +%Y%m%d).json
 ## Sample Data
 
 On first run, the service initializes with 2 mock routes:
+
 - New York, NY → Boston, MA (with stop in Hartford, CT)
 - Los Angeles, CA → San Francisco, CA

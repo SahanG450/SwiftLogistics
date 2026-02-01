@@ -61,20 +61,23 @@ Once running, visit:
 
 ## Data Storage
 
-Inventory data is persisted to `data/inventory.json`. 
+Inventory data is persisted to `data/inventory.json`.
 
 ### View Data
+
 ```bash
 cat data/inventory.json | jq
 ```
 
 ### Reset Data
+
 ```bash
 # Delete the JSON file - it will be recreated with mock data on next startup
 rm data/inventory.json
 ```
 
 ### Backup Data
+
 ```bash
 # Backup inventory data
 cp data/inventory.json ~/backup/inventory-$(date +%Y%m%d).json
@@ -83,6 +86,7 @@ cp data/inventory.json ~/backup/inventory-$(date +%Y%m%d).json
 ## Sample Data
 
 On first run, the service initializes with 3 mock inventory items:
+
 - PROD-001: Laptop Computer (50 units)
 - PROD-002: Wireless Mouse (200 units)
 - PROD-003: USB Cable (5 units - low stock)

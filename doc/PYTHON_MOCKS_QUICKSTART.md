@@ -19,8 +19,8 @@ curl http://localhost:3003/health  # WMS
 
 ## 📡 Service URLs
 
-| Service | Port | Base URL | API Docs |
-|---------|------|----------|----------|
+| Service      | Port | Base URL              | API Docs                   |
+| ------------ | ---- | --------------------- | -------------------------- |
 | **CMS Mock** | 3001 | http://localhost:3001 | http://localhost:3001/docs |
 | **ROS Mock** | 3002 | http://localhost:3002 | http://localhost:3002/docs |
 | **WMS Mock** | 3003 | http://localhost:3003 | http://localhost:3003/docs |
@@ -30,6 +30,7 @@ curl http://localhost:3003/health  # WMS
 ## 📋 Common Commands
 
 ### Start Services
+
 ```bash
 # Start all services
 ./scripts/start-python-mocks.sh
@@ -41,6 +42,7 @@ python app.py
 ```
 
 ### Stop Services
+
 ```bash
 # Stop all services
 ./scripts/stop-python-mocks.sh
@@ -49,6 +51,7 @@ python app.py
 ```
 
 ### Test Services
+
 ```bash
 # Run automated tests
 ./scripts/test-mock-services.sh
@@ -64,6 +67,7 @@ curl http://localhost:3003/health
 ## 🔍 API Endpoints
 
 ### CMS Mock (Customer Management)
+
 ```bash
 # Get all customers
 curl http://localhost:3001/api/customers/
@@ -86,6 +90,7 @@ curl -X DELETE http://localhost:3001/api/customers/{id}
 ```
 
 ### ROS Mock (Route Optimization)
+
 ```bash
 # Get all routes
 curl http://localhost:3002/api/routes/
@@ -102,6 +107,7 @@ curl -X POST http://localhost:3002/api/routes/ \
 ```
 
 ### WMS Mock (Warehouse Management)
+
 ```bash
 # Get all inventory
 curl http://localhost:3003/api/inventory/
@@ -130,6 +136,7 @@ curl -X POST http://localhost:3003/api/inventory/check-stock \
 ## 💾 Data Storage
 
 ### File Locations
+
 ```
 services/mocks/cms-mock/data/customers.json
 services/mocks/ros-mock/data/routes.json
@@ -137,6 +144,7 @@ services/mocks/wms-mock/data/inventory.json
 ```
 
 ### View Data
+
 ```bash
 # View customers
 cat services/mocks/cms-mock/data/customers.json | python3 -m json.tool
@@ -149,6 +157,7 @@ cat services/mocks/wms-mock/data/inventory.json | python3 -m json.tool
 ```
 
 ### Reset Data
+
 ```bash
 # Delete data file (will be recreated with initial data on restart)
 rm services/mocks/cms-mock/data/customers.json
@@ -165,6 +174,7 @@ rm services/mocks/wms-mock/data/inventory.json
 ## 🐛 Troubleshooting
 
 ### Services Won't Start
+
 ```bash
 # Check if port is already in use
 lsof -i :3001
@@ -176,6 +186,7 @@ kill -9 $(lsof -t -i:3001)
 ```
 
 ### Dependencies Issues
+
 ```bash
 # Remove virtual environments
 rm -rf services/mocks/*/venv
@@ -185,6 +196,7 @@ rm -rf services/mocks/*/venv
 ```
 
 ### View Service Logs
+
 ```bash
 # Services run in foreground, check terminal output
 # Or redirect to log file when starting:
@@ -198,6 +210,7 @@ python app.py > cms.log 2>&1 &
 ## 📦 Dependencies
 
 All services use:
+
 - **FastAPI** 0.115.6 - Web framework
 - **Uvicorn** 0.34.0 - ASGI server
 - **Pydantic** 2.10.6 - Data validation
@@ -228,6 +241,7 @@ All services use:
 ## 🆘 Support
 
 For issues or questions:
+
 1. Check service logs
 2. Review API documentation at `/docs` endpoint
 3. Verify data files exist in `data/` directories
