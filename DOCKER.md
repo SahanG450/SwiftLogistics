@@ -8,7 +8,7 @@ This guide provides detailed instructions for running SwiftLogistics using Docke
 
 - **Docker Engine**: 20.10 or higher
 - **Docker Compose**: 2.0 or higher
-- **System Requirements**: 
+- **System Requirements**:
   - 4GB RAM minimum (8GB recommended)
   - 10GB free disk space
 
@@ -17,6 +17,7 @@ This guide provides detailed instructions for running SwiftLogistics using Docke
 ### Install Docker
 
 **Ubuntu/Debian:**
+
 ```bash
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
@@ -75,20 +76,24 @@ make logs
 The Docker Compose setup includes:
 
 ### Infrastructure Layer
+
 - **MongoDB** (Port 27017) - Persistent storage
 - **RabbitMQ** (Ports 5672, 15672) - Message broker
 
 ### Application Layer
+
 - **API Gateway** (Port 3000) - Entry point
 - **Orchestrator** (Port 3001) - Transaction manager
 - **Notification Service** (Port 3002) - WebSocket server
 
 ### Adapter Layer
+
 - **CMS Adapter** - SOAP/XML protocol translator
 - **ROS Adapter** - REST/JSON protocol translator
 - **WMS Adapter** - TCP socket protocol translator
 
 ### Mock Layer
+
 - **CMS Mock** (Port 4000) - SOAP server simulator
 - **ROS Mock** (Port 4001) - REST API simulator
 - **WMS Mock** (Port 4002) - TCP server simulator
@@ -98,7 +103,9 @@ The Docker Compose setup includes:
 All services run on a custom bridge network: `swiftlogistics-network`
 
 ### Internal DNS Resolution
+
 Services can communicate using their service names:
+
 - `mongodb` → MongoDB database
 - `rabbitmq` → RabbitMQ broker
 - `orchestrator` → Orchestrator service
@@ -112,11 +119,13 @@ Services can communicate using their service names:
 The Docker Compose file includes default environment variables. To customize:
 
 1. Copy the example file:
+
 ```bash
 cp .env.example .env
 ```
 
 2. Edit `.env` with your values:
+
 ```bash
 # Example customizations
 MONGODB_URI=mongodb://admin:mypassword@mongodb:27017/swiftlogistics?authSource=admin
@@ -125,6 +134,7 @@ RATE_LIMIT_MAX_REQUESTS=200
 ```
 
 3. Restart services:
+
 ```bash
 docker-compose down
 docker-compose up -d
@@ -132,12 +142,12 @@ docker-compose up -d
 
 ### Key Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `MONGODB_URI` | MongoDB connection string | `mongodb://admin:admin123@mongodb:27017/swiftlogistics?authSource=admin` |
-| `RABBITMQ_URL` | RabbitMQ connection URL | `amqp://admin:admin123@rabbitmq:5672` |
-| `JWT_SECRET` | JWT signing secret | `your-secret-key-change-in-production` |
-| `NODE_ENV` | Environment mode | `development` |
+| Variable       | Description               | Default                                                                  |
+| -------------- | ------------------------- | ------------------------------------------------------------------------ |
+| `MONGODB_URI`  | MongoDB connection string | `mongodb://admin:admin123@mongodb:27017/swiftlogistics?authSource=admin` |
+| `RABBITMQ_URL` | RabbitMQ connection URL   | `amqp://admin:admin123@rabbitmq:5672`                                    |
+| `JWT_SECRET`   | JWT signing secret        | `your-secret-key-change-in-production`                                   |
+| `NODE_ENV`     | Environment mode          | `development`                                                            |
 
 ## Health Checks
 
@@ -275,6 +285,7 @@ volumes:
 ```
 
 Then restart:
+
 ```bash
 docker-compose restart api-gateway
 ```
@@ -333,6 +344,7 @@ docker-compose up --build -d
 ### Security Hardening
 
 1. **Change default passwords**:
+
 ```bash
 # In .env file
 MONGO_INITDB_ROOT_PASSWORD=<strong-password>
@@ -341,12 +353,14 @@ JWT_SECRET=<random-256-bit-key>
 ```
 
 2. **Remove management ports**:
+
 ```yaml
 # In docker-compose.yml, comment out:
 # - "15672:15672"  # RabbitMQ UI
 ```
 
 3. **Use secrets management**:
+
 ```bash
 # Use Docker secrets or external secret managers
 # like AWS Secrets Manager, HashiCorp Vault
@@ -363,10 +377,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1'
+          cpus: "1"
           memory: 512M
         reservations:
-          cpus: '0.5'
+          cpus: "0.5"
           memory: 256M
 ```
 
@@ -375,7 +389,7 @@ services:
 Create `docker-compose.prod.yml`:
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   mongodb:
@@ -398,6 +412,7 @@ services:
 ```
 
 Run with:
+
 ```bash
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ```
@@ -417,11 +432,13 @@ docker stats swiftlogistics-orchestrator
 ### RabbitMQ Monitoring
 
 Access management UI:
+
 - URL: http://localhost:15672
 - Username: `admin`
 - Password: `admin123`
 
 Monitor:
+
 - Queue depths
 - Message rates
 - Connection status
@@ -573,6 +590,7 @@ test:
 ## Support
 
 For issues and questions:
+
 - Check logs: `docker-compose logs`
 - Review documentation: `./ARCHITECTURE.md`
 - Check service status: `docker-compose ps`

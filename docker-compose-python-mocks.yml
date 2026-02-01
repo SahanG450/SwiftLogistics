@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  cms-mock-python:
+    build:
+      context: ./services/mocks/cms-mock-python
+      dockerfile: Dockerfile
+    container_name: cms-mock-python
+    ports:
+      - "3001:3001"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3001
+      - DEBUG=true
+    networks:
+      - swiftlogistics-python
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  ros-mock-python:
+    build:
+      context: ./services/mocks/ros-mock-python
+      dockerfile: Dockerfile
+    container_name: ros-mock-python
+    ports:
+      - "3002:3002"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3002
+      - DEBUG=true
+    networks:
+      - swiftlogistics-python
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  wms-mock-python:
+    build:
+      context: ./services/mocks/wms-mock-python
+      dockerfile: Dockerfile
+    container_name: wms-mock-python
+    ports:
+      - "3003:3003"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3003
+      - DEBUG=true
+    networks:
+      - swiftlogistics-python
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  swiftlogistics-python:
+    driver: bridge

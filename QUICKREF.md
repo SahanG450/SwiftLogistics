@@ -215,16 +215,16 @@ curl http://localhost:3000/health
 
 ## 📊 Monitoring URLs
 
-| Service | URL | Credentials |
-|---------|-----|-------------|
-| API Gateway | http://localhost:3000 | - |
-| Orchestrator | http://localhost:3001 | - |
-| Notification Service | http://localhost:3002 | - |
-| RabbitMQ Management | http://localhost:15672 | admin / admin123 |
-| MongoDB | mongodb://localhost:27017 | admin / admin123 |
-| CMS Mock | http://localhost:4000/cms?wsdl | - |
-| ROS Mock | http://localhost:4001 | - |
-| WMS Mock | tcp://localhost:4002 | - |
+| Service              | URL                            | Credentials      |
+| -------------------- | ------------------------------ | ---------------- |
+| API Gateway          | http://localhost:3000          | -                |
+| Orchestrator         | http://localhost:3001          | -                |
+| Notification Service | http://localhost:3002          | -                |
+| RabbitMQ Management  | http://localhost:15672         | admin / admin123 |
+| MongoDB              | mongodb://localhost:27017      | admin / admin123 |
+| CMS Mock             | http://localhost:4000/cms?wsdl | -                |
+| ROS Mock             | http://localhost:4001          | -                |
+| WMS Mock             | tcp://localhost:4002           | -                |
 
 ## 🛠️ Makefile Commands
 
@@ -322,10 +322,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
+          cpus: "1.0"
           memory: 512M
         reservations:
-          cpus: '0.5'
+          cpus: "0.5"
           memory: 256M
 ```
 

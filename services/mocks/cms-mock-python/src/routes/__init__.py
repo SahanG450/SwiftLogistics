@@ -1,0 +1,5 @@
+"""Routes Module"""
+
+from .cms_routes import router
+
+__all__ = ["router"]

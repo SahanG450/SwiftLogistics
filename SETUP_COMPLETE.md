@@ -7,21 +7,25 @@ Your SwiftLogistics project now has a complete Docker setup with the following f
 ### 📝 Configuration Files
 
 1. **`docker-compose.yml`**
+
    - Orchestrates all 12 services
    - Includes MongoDB and RabbitMQ infrastructure
    - Configures networking and volumes
    - Sets up health checks and dependencies
 
 2. **`.env.example`**
+
    - Template for environment variables
    - All configuration options documented
    - Copy to `.env` for customization
 
 3. **`.dockerignore`**
+
    - Optimizes Docker builds
    - Excludes unnecessary files
 
 4. **`.gitignore`**
+
    - Prevents committing sensitive files
    - Excludes Docker volumes and logs
 
@@ -32,20 +36,24 @@ Your SwiftLogistics project now has a complete Docker setup with the following f
 ### 🔧 Utility Scripts
 
 6. **`scripts/start.sh`** ⭐
+
    - One-command startup
    - Checks prerequisites
    - Displays helpful info
 
 7. **`scripts/stop.sh`**
+
    - Clean shutdown of all services
    - Includes cleanup options
 
 8. **`scripts/health-check.sh`** ⭐
+
    - Verifies all services are running
    - Tests endpoints and ports
    - Color-coded output
 
 9. **`scripts/test-api.sh`** ⭐
+
    - Comprehensive API testing
    - Tests all service endpoints
    - Validates RabbitMQ queues
@@ -58,12 +66,14 @@ Your SwiftLogistics project now has a complete Docker setup with the following f
 ### 📚 Documentation
 
 11. **`DOCKER.md`** ⭐
+
     - Complete Docker setup guide
     - Troubleshooting section
     - Production deployment tips
     - CI/CD integration examples
 
 12. **`QUICKREF.md`** ⭐
+
     - Quick reference for commands
     - Common operations
     - Debugging tips
@@ -93,20 +103,24 @@ cd "/home/snake/UCSC/UCSC/Year 2/sem 2/Middleware Architecture SCS2314/Assignmen
 ### What Gets Started
 
 ✅ **Infrastructure** (2 services)
+
 - MongoDB (Port 27017)
 - RabbitMQ (Ports 5672, 15672)
 
 ✅ **Core Services** (3 services)
+
 - API Gateway (Port 3000)
 - Orchestrator (Port 3001)
 - Notification Service (Port 3002)
 
 ✅ **Adapters** (3 services)
+
 - CMS Adapter (SOAP)
 - ROS Adapter (REST)
 - WMS Adapter (TCP)
 
 ✅ **Mock Systems** (3 services)
+
 - CMS Mock (Port 4000)
 - ROS Mock (Port 4001)
 - WMS Mock (Port 4002)
@@ -116,6 +130,7 @@ cd "/home/snake/UCSC/UCSC/Year 2/sem 2/Middleware Architecture SCS2314/Assignmen
 ## 📊 Monitoring & Management
 
 ### RabbitMQ Management UI
+
 ```
 URL: http://localhost:15672
 Username: admin
@@ -123,6 +138,7 @@ Password: admin123
 ```
 
 ### MongoDB Access
+
 ```bash
 # Via CLI
 docker-compose exec mongodb mongosh -u admin -p admin123
@@ -132,6 +148,7 @@ mongodb://admin:admin123@localhost:27017/swiftlogistics?authSource=admin
 ```
 
 ### View Logs
+
 ```bash
 # All services
 docker-compose logs -f
@@ -147,16 +164,19 @@ make logs-orchestrator
 ## 🧪 Testing the System
 
 ### Run Health Check
+
 ```bash
 ./scripts/health-check.sh
 ```
 
 ### Run API Tests
+
 ```bash
 ./scripts/test-api.sh
 ```
 
 ### Submit a Test Order
+
 ```bash
 curl -X POST http://localhost:3000/api/orders \
   -H "Content-Type: application/json" \
@@ -197,6 +217,7 @@ make ps                # Show running containers
 ## 🔍 Troubleshooting
 
 ### Services Won't Start
+
 ```bash
 # Check logs
 docker-compose logs
@@ -209,6 +230,7 @@ docker-compose restart
 ```
 
 ### Port Conflicts
+
 ```bash
 # Find what's using the port
 lsof -i :3000
@@ -217,6 +239,7 @@ lsof -i :3000
 ```
 
 ### Clean Start
+
 ```bash
 # Remove everything and start fresh
 docker-compose down -v
@@ -246,16 +269,19 @@ docker-compose up --build -d
 Your SwiftLogistics middleware system is now fully containerized and ready to run!
 
 **Start the system:**
+
 ```bash
 ./scripts/start.sh
 ```
 
 **Check everything is working:**
+
 ```bash
 ./scripts/health-check.sh
 ```
 
 **View the architecture:**
+
 - Open `DIAGRAMS.md` or `DIAGRAMS.pdf`
 - Read `ARCHITECTURE.md` for detailed explanations
 
