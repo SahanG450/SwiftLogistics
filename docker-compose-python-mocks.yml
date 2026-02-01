@@ -1,66 +1,78 @@
 version: '3.8'
 
 services:
-  cms-mock-python:
+  cms-mock:
     build:
-      context: ./services/mocks/cms-mock-python
+      context: ./services/mocks/cms-mock
       dockerfile: Dockerfile
-    container_name: cms-mock-python
+    container_name: cms-mock
     ports:
       - "3001:3001"
     environment:
       - HOST=0.0.0.0
       - PORT=3001
       - DEBUG=true
+      - CORS_ORIGINS=["*"]
+    volumes:
+      - ./services/mocks/cms-mock/data:/app/data
     networks:
-      - swiftlogistics-python
+      - swiftlogistics
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+    restart: unless-stopped
 
-  ros-mock-python:
+  ros-mock:
     build:
-      context: ./services/mocks/ros-mock-python
+      context: ./services/mocks/ros-mock
       dockerfile: Dockerfile
-    container_name: ros-mock-python
+    container_name: ros-mock
     ports:
       - "3002:3002"
     environment:
       - HOST=0.0.0.0
       - PORT=3002
       - DEBUG=true
+      - CORS_ORIGINS=["*"]
+    volumes:
+      - ./services/mocks/ros-mock/data:/app/data
     networks:
-      - swiftlogistics-python
+      - swiftlogistics
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+    restart: unless-stopped
 
-  wms-mock-python:
+  wms-mock:
     build:
-      context: ./services/mocks/wms-mock-python
+      context: ./services/mocks/wms-mock
       dockerfile: Dockerfile
-    container_name: wms-mock-python
+    container_name: wms-mock
     ports:
       - "3003:3003"
     environment:
       - HOST=0.0.0.0
       - PORT=3003
       - DEBUG=true
+      - CORS_ORIGINS=["*"]
+    volumes:
+      - ./services/mocks/wms-mock/data:/app/data
     networks:
-      - swiftlogistics-python
+      - swiftlogistics
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3003/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+    restart: unless-stopped
 
 networks:
-  swiftlogistics-python:
+  swiftlogistics:
     driver: bridge
