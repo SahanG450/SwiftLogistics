@@ -23,7 +23,7 @@ services:
     image: rabbitmq:3.12-management-alpine
     container_name: swiftlogistics-rabbitmq
     ports:
-      - "5672:5672"   # AMQP protocol
+      - "5672:5672" # AMQP protocol
       - "15672:15672" # Management UI
     environment:
       RABBITMQ_DEFAULT_USER: admin
@@ -38,32 +38,29 @@ services:
       timeout: 5s
       retries: 5
 
-  # Mock Systems
+  # Mock Systems (Python FastAPI Services)
   cms-mock:
     build:
       context: ./services/mocks/cms-mock
       dockerfile: Dockerfile
     container_name: swiftlogistics-cms-mock
     ports:
-      - "4000:4000"
+      - "3001:3001"
+    volumes:
+      - ./services/mocks/cms-mock/data:/app/data
     networks:
       - swiftlogistics-network
     environment:
-      NODE_ENV: development
-      PORT: 4000
-
-  ros-mock:
-    build:
-      context: ./services/mocks/ros-mock
-      dockerfile: Dockerfile
-    container_name: swiftlogistics-ros-mock
-    ports:
-      - "4001:4001"
-    networks:
-      - swiftlogistics-network
-    environment:
-      NODE_ENV: development
-      PORT: 4001
+      APP_NAME: "CMS Mock Service"
+      HOST: 0.0.0.0
+      PORT: 3001
+      DEBUG: "true"
+      CORS_ORIGINS: "http://localhost:3000,http://localhost:5173"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3001/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   wms-mock:
     build:
@@ -71,12 +68,45 @@ services:
       dockerfile: Dockerfile
     container_name: swiftlogistics-wms-mock
     ports:
-      - "4002:4002"
+      - "3002:3002"
+    volumes:
+      - ./services/mocks/wms-mock/data:/app/data
     networks:
       - swiftlogistics-network
     environment:
-      NODE_ENV: development
-      PORT: 4002
+      APP_NAME: "WMS Mock Service"
+      HOST: 0.0.0.0
+      PORT: 3002
+      DEBUG: "true"
+      CORS_ORIGINS: "http://localhost:3000,http://localhost:5173"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3002/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  ros-mock:
+    build:
+      context: ./services/mocks/ros-mock
+      dockerfile: Dockerfile
+    container_name: swiftlogistics-ros-mock
+    ports:
+      - "3003:3003"
+    volumes:
+      - ./services/mocks/ros-mock/data:/app/data
+    networks:
+      - swiftlogistics-network
+    environment:
+      APP_NAME: "ROS Mock Service"
+      HOST: 0.0.0.0
+      PORT: 3003
+      DEBUG: "true"
+      CORS_ORIGINS: "http://localhost:3000,http://localhost:5173"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3003/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # Core Services
   orchestrator:
@@ -161,7 +191,7 @@ services:
       RABBITMQ_URL: amqp://admin:admin123@rabbitmq:5672
       ORDER_QUEUE: new_order_queue
       EVENTS_EXCHANGE: events_exchange
-      CMS_SOAP_URL: http://cms-mock:4000/cms?wsdl
+      CMS_API_URL: http://cms-mock:3001
       ORCHESTRATOR_URL: http://orchestrator:3001
     networks:
       - swiftlogistics-network
@@ -184,7 +214,7 @@ services:
       RABBITMQ_URL: amqp://admin:admin123@rabbitmq:5672
       ORDER_QUEUE: new_order_queue
       EVENTS_EXCHANGE: events_exchange
-      ROS_API_URL: http://ros-mock:4001
+      ROS_API_URL: http://ros-mock:3003
       ORCHESTRATOR_URL: http://orchestrator:3001
     networks:
       - swiftlogistics-network
@@ -207,8 +237,7 @@ services:
       RABBITMQ_URL: amqp://admin:admin123@rabbitmq:5672
       ORDER_QUEUE: new_order_queue
       EVENTS_EXCHANGE: events_exchange
-      WMS_TCP_HOST: wms-mock
-      WMS_TCP_PORT: 4002
+      WMS_API_URL: http://wms-mock:3002
       ORCHESTRATOR_URL: http://orchestrator:3001
     networks:
       - swiftlogistics-network
