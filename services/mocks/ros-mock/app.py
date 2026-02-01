@@ -10,6 +10,7 @@ app = FastAPI(
     title=settings.app_name,
     description="Route Optimization System Mock Service for Swift Logistics",
     version="1.0.0",
+    redoc_url=None,  # Disable ReDoc, use Swagger UI only
 )
 
 # Configure CORS
