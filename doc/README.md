@@ -41,12 +41,12 @@ This will start:
 - MongoDB (localhost:27017)
 - RabbitMQ (localhost:5672, Management UI: localhost:15672)
 - API Gateway (localhost:3000)
-- Orchestrator (localhost:3001)
-- Notification Service (localhost:3002)
-- CMS Mock (localhost:4000)
-- ROS Mock (localhost:4001)
-- WMS Mock (localhost:4002)
-- All adapters (CMS, ROS, WMS)
+- CMS Mock Service (localhost:3001)
+- WMS Mock Service (localhost:3002)
+- ROS Mock Service (localhost:3003)
+- Orchestrator (internal service, accessed via API Gateway)
+- Notification Service (internal service, WebSocket on network)
+- All adapters (CMS, ROS, WMS - internal services)
 
 3. **Verify services are running**
 
@@ -56,12 +56,15 @@ docker-compose ps
 
 ### Service Endpoints
 
-| Service              | URL                    | Description                         |
-| -------------------- | ---------------------- | ----------------------------------- |
-| API Gateway          | http://localhost:3000  | Main entry point                    |
-| Orchestrator         | http://localhost:3001  | Order management                    |
-| Notification Service | http://localhost:3002  | WebSocket server                    |
-| RabbitMQ Management  | http://localhost:15672 | Username: admin, Password: admin123 |
+| Service             | URL                    | Description                         |
+| ------------------- | ---------------------- | ----------------------------------- |
+| API Gateway         | http://localhost:3000  | Main entry point for frontend apps  |
+| CMS Mock Service    | http://localhost:3001  | Client Management System mock       |
+| WMS Mock Service    | http://localhost:3002  | Warehouse Management System mock    |
+| ROS Mock Service    | http://localhost:3003  | Route Optimization System mock      |
+| RabbitMQ Management | http://localhost:15672 | Username: admin, Password: admin123 |
+
+**Note**: Orchestrator, Notification Service, and Adapters are internal services accessible within the Docker network, not exposed to localhost.
 
 ### Common Commands
 
@@ -181,8 +184,33 @@ Make sure MongoDB and RabbitMQ are running and update connection URLs in the ser
 
 ## 📚 Documentation
 
-- [Architecture Documentation](./ARCHITECTURE.md) - Detailed system design
-- [System Diagrams](./DIAGRAMS.md) - Visual architecture diagrams
+### Backend Documentation
+
+- [Architecture Documentation](./ARCHITECTURE.md) - Detailed system design and architecture patterns
+- [System Diagrams](./DIAGRAMS.md) - Visual architecture diagrams and flow charts
+- [Docker Setup](./DOCKER.md) - Docker configuration and container management
+- [Services Index](./SERVICES_INDEX.md) - Complete index of all backend services
+
+### Frontend Documentation
+
+- **[Frontend Quick Start](./FRONTEND_QUICKSTART.md)** - Complete setup guide for both frontend applications
+- **[Web Client Portal](./WEB_CLIENT_PORTAL.md)** - React + Vite web application for clients
+  - Order submission and tracking
+  - Invoice and billing management
+  - Contract management
+  - Complete API integration
+- **[Mobile Driver App](./MOBILE_DRIVER_APP.md)** - React Native + Expo mobile app for drivers
+  - Daily manifest management
+  - GPS tracking and navigation
+  - Proof of delivery capture
+  - Real-time status updates
+
+### Getting Started
+
+1. **Backend Setup**: Follow the [Quick Start](#-quick-start-with-docker) section above
+2. **Frontend Setup**: See [FRONTEND_QUICKSTART.md](./FRONTEND_QUICKSTART.md)
+3. **Architecture Review**: Read [ARCHITECTURE.md](./ARCHITECTURE.md)
+4. **Visual Overview**: Check [DIAGRAMS.md](./DIAGRAMS.md)
 
 ## 🐛 Troubleshooting
 
