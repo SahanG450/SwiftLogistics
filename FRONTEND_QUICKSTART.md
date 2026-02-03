@@ -76,7 +76,7 @@ The web portal will be available at: **http://localhost:5173**
 
 ```bash
 # Navigate to mobile app directory
-cd ../mobile-driver-app
+cd mobile-driver-app
 
 # Install dependencies (already done if following setup)
 npm install
@@ -332,7 +332,7 @@ npm run android  # or npm run ios
 
 ```
 SwiftLogistics/
-├── web-client-portal/          # Web application for clients
+├── web-client-portal/          # Web application for clients (React)
 │   ├── src/
 │   │   ├── pages/              # React pages/routes
 │   │   ├── components/         # Reusable UI components
@@ -345,7 +345,7 @@ SwiftLogistics/
 │   ├── package.json
 │   └── README.md               # Detailed web portal docs
 │
-├── mobile-driver-app/          # Mobile app for drivers
+├── mobile-driver-app/          # Mobile app for drivers (React Native)
 │   ├── app/                    # Expo Router screens
 │   ├── components/             # React Native components
 │   ├── services/               # API, auth, location services
@@ -356,6 +356,7 @@ SwiftLogistics/
 │   ├── package.json
 │   └── README.md               # Detailed mobile app docs
 │
+├── ui/                         # Additional UI resources (optional)
 ├── services/                   # Backend services
 ├── docker-compose.yml          # Backend orchestration
 └── FRONTEND_QUICKSTART.md      # This file
