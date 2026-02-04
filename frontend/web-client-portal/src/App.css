@@ -1,0 +1,10 @@
+#root {
+  min-height: 100vh;
+}
+
+/* Premium layout utilities */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
