@@ -1,11 +1,31 @@
-FROM node:18-alpine
+FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY package*.json ./
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN npm install --production
+# Copy requirements and install
+COPY adapters/ros-adapter/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY src ./src
+# Copy common utilities
+COPY common /app/common
 
-CMD ["npm", "start"]
+# Copy application
+COPY adapters/ros-adapter .
+
+# Create logs directory
+RUN mkdir -p /app/logs
+
+# Expose port
+EXPOSE 3006
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+    CMD curl -f http://localhost:3006/health || exit 1
+
+# Run application
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "3006"]
