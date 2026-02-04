@@ -213,3 +213,117 @@ Docker Compose creates a private network (`custom_network`).
   - Gateway talks to `http://orchestrator:3001`.
   - Adapters talk to `amqp://rabbitmq:5672`.
 - **Isolation:** Only ports `3000-3003` are exposed to host; internal database ports (`27017`) can be kept private if desired (currently exposed for debugging).
+
+---
+
+## 9. Software Design & Implementation Patterns
+
+### 9.1 Concurrency Models
+
+The system employs a hybrid concurrency model to handle different types of workloads:
+
+1.  **Asynchronous I/O (Main Event Loop)**
+    - **Services:** API Gateway, Orchestrator
+    - **Technology:** Python `asyncio` + FastAPI (Uvicorn).
+    - **Pattern:** Non-blocking I/O is used for all HTTP handling. The single-threaded `asyncio` loop ensures high throughput for API requests by yielding control during I/O waits (e.g., waiting for DB or RabbitMQ acknowledgments).
+
+2.  **Multithreading (Background Workers)**
+    - **Services:** Adapters (CMS, ROS, WMS), Notification Service.
+    - **Technology:** `threading.Thread`.
+    - **Reason:** The Pika library (RabbitMQ client) uses a **blocking** connection model (`BlockingConnection`). To ensure the FastAPI health check endpoints remain responsive, the Pika consumer loop runs in a separate daemon thread.
+    - **Code Example:**
+      ```python
+      # Main thread runs FastAPI (Health checks)
+      # Background thread runs Pika consumer
+      consumer_thread = threading.Thread(target=consume_orders, daemon=True)
+      consumer_thread.start()
+      ```
+
+3.  **Bridge: Thread -> Async**
+    - **Service:** Notification Service.
+    - **Challenge:** Pika runs in a Thread, but Socket.IO is Async.
+    - **Solution:** Uses `asyncio.run_coroutine_threadsafe` (or similar mechanisms) to bridge the synchronous Pika callback to the asynchronous Socket.IO emit function.
+
+### 9.2 Thread Safety
+
+- **State Isolation:** Each service is designed to be **stateless**. Data is stored in MongoDB or passed via immutable Message Queue events.
+- **No Shared Memory:** Since we run in Docker containers, memory is isolated.
+- **GIL (Global Interpreter Lock):** In Python, the GIL prevents multiple native threads from executing Python bytecodes at once. While this limits CPU-bound parallelism, it simplifies thread safety.
+- **Safe Resourcing:** Database connections (`motor`) and Queue connections (`pika`) are created per-process or per-thread as required. We do NOT share a single socket across threads without locks.
+
+### 9.3 Design Patterns Used
+
+1.  **Orchestration Pattern (Saga-like)**
+    - The **Orchestrator Service** is the central authority. It directs the flow but doesn't block waiting for results. It relies on **Eventual Consistency** (e.g., "Order Created" -> "Order Processed").
+
+2.  **Adapter Pattern (Structural)**
+    - **Problem:** Mocks/External systems speak different languages (SOAP, TCP, REST).
+    - **Solution:** Adapter services wrap these incompatibilities and present a uniform "RabbitMQ JSON Event" interface to the rest of the system.
+
+3.  **Observer Pattern (Pub/Sub)**
+    - The **Notification Service** "observes" the `events_exchange`. It doesn't know who produced the event, it just reacts by pushing to the UI.
+
+4.  **Middleware Pattern**
+    - Used in the **API Gateway** for Cross-Cutting Concerns such as Rate Limiting (`slowapi`), Auth (`JWT`), and CORS logic before the request hits the actual router.
+
+---
+
+## 10. Event Architecture & Triggers
+
+### 10.1 Event Catalog
+
+| Event Name         | Source       | Trigger Condition                                | Destination (Topics)                                    |
+| :----------------- | :----------- | :----------------------------------------------- | :------------------------------------------------------ |
+| **`order.new`**    | Orchestrator | User submits `POST /api/orders`                  | `cms_order_queue`, `ros_order_queue`, `wms_order_queue` |
+| **`cms.success`**  | CMS Adapter  | Adapter successfully calls CMS SOAP API          | `notification_events_queue`                             |
+| **`ros.success`**  | ROS Adapter  | Adapter successfully gets Route from ROS API     | `notification_events_queue`                             |
+| **`wms.success`**  | WMS Adapter  | Adapter successfully receives ACK from WMS TCP   | `notification_events_queue`                             |
+| **`order.update`** | Any Adapter  | Implementation dependant - generic status update | `notification_events_queue`                             |
+
+### 10.2 Sequence Diagram: Event Trigger Flow
+
+```mermaid
+sequenceDiagram
+    participant U as User (Frontend)
+    participant O as Orchestrator
+    participant MQ as RabbitMQ
+    participant A as Adapter (e.g., ROS)
+    participant N as Notification Service
+
+    U->>O: POST /api/orders
+    Note over O: 1. Validate & Save to DB
+    O->>MQ: Publish "order.new" (Fanout)
+    Note over MQ: 2. Broadcast to Queues
+
+    par Parallel Processing
+        MQ->>A: Consume "order.new"
+        Note over A: 3. Adapter Logic (REST/SOAP/TCP)
+        A->>MQ: Publish "ros.success" (Topic)
+    end
+
+    MQ->>N: Consume "ros.success"
+    Note over N: 4. Bridge Thread -> Async
+    N->>U: WebSocket "order-update"
+```
+
+---
+
+## 11. System Best Practices
+
+### 11.1 Security Best Practices
+
+- **Least Privilege:** Internal services (Orchestrator, Adapters) are not exposed to the public internet; only the API Gateway is.
+- **Credential Hashing:** User passwords are never stored in plain text. `bcrypt` is used with automatic salt generation.
+- **Input Validation:** All incoming data is strictly validated using **Pydantic V2** schemas. Extra fields are forbidden to prevent injection attacks.
+
+### 11.2 Reliability & Fault Tolerance
+
+- **Durable Queues:** RabbitMQ queues are declared as `durable=True`, ensuring messages survive a broker restart.
+- **Acknowledgments (ACKs):** Consumers only send an ACK (`ch.basic_ack`) after successfully processing the message. If the worker crashes mid-process, the message is requeued.
+- **Dead Letter Handling:** (Planned) Unprocessable messages should be routed to a mechanism for manual inspection.
+
+### 11.3 Code Quality & Maintainability
+
+- **Type Hinting:** Fully leverages Python 3.13+ type hints for better developer experience and generic catching of type errors.
+- **Modular Monorepo:** Services are kept in separate folders but share a common `Makefile` and `docker-compose.yml`, simplifying the "Developer Loop".
+- **Environment Configuration:** All secrets (URLs, Ports, Credentials) are loaded via `.env` files using `python-dotenv`, keeping configuration separate from code.
