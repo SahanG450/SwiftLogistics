@@ -108,11 +108,11 @@ services:
       timeout: 10s
       retries: 3
 
-  # Core Services
+  # Core Services (Python FastAPI)
   orchestrator:
     build:
-      context: ./services/orchestrator
-      dockerfile: Dockerfile
+      context: ./services
+      dockerfile: orchestrator/Dockerfile
     container_name: swiftlogistics-orchestrator
     ports:
       - "3001:3001"
@@ -122,63 +122,60 @@ services:
       rabbitmq:
         condition: service_healthy
     environment:
-      NODE_ENV: development
-      PORT: 3001
       MONGODB_URI: mongodb://admin:admin123@mongodb:27017/swiftlogistics?authSource=admin
       RABBITMQ_URL: amqp://admin:admin123@rabbitmq:5672
-      ORDER_QUEUE: new_order_queue
-      ORDER_EXCHANGE: order_exchange
-      EVENTS_EXCHANGE: events_exchange
+      JWT_SECRET: your-secret-key-change-in-production
+      LOG_LEVEL: INFO
     networks:
       - swiftlogistics-network
     restart: on-failure
 
   api-gateway:
     build:
-      context: ./services/api-gateway
-      dockerfile: Dockerfile
+      context: ./services
+      dockerfile: api-gateway/Dockerfile
     container_name: swiftlogistics-api-gateway
     ports:
       - "3000:3000"
     depends_on:
       - orchestrator
+      - cms-mock
     environment:
-      NODE_ENV: development
-      PORT: 3000
       ORCHESTRATOR_URL: http://orchestrator:3001
+      CMS_API_URL: http://cms-mock:3001
       JWT_SECRET: your-secret-key-change-in-production
-      RATE_LIMIT_WINDOW_MS: 900000
-      RATE_LIMIT_MAX_REQUESTS: 100
+      WEB_CLIENT_URL: http://localhost:5173
+      LOG_LEVEL: INFO
     networks:
       - swiftlogistics-network
     restart: on-failure
 
   notification-service:
     build:
-      context: ./services/notification-service
-      dockerfile: Dockerfile
+      context: ./services
+      dockerfile: notification-service/Dockerfile
     container_name: swiftlogistics-notification-service
     ports:
-      - "3002:3002"
+      - "3004:3004"
     depends_on:
       rabbitmq:
         condition: service_healthy
     environment:
-      NODE_ENV: development
-      PORT: 3002
       RABBITMQ_URL: amqp://admin:admin123@rabbitmq:5672
-      EVENTS_EXCHANGE: events_exchange
-      EVENTS_QUEUE: notification_events_queue
+      WEB_CLIENT_URL: http://localhost:5173
+      LOG_LEVEL: INFO
     networks:
       - swiftlogistics-network
     restart: on-failure
 
-  # Adapters
+  # Adapters (Python FastAPI)
   cms-adapter:
     build:
-      context: ./services/adapters/cms-adapter
-      dockerfile: Dockerfile
+      context: ./services
+      dockerfile: adapters/cms-adapter/Dockerfile
     container_name: swiftlogistics-cms-adapter
+    ports:
+      - "3005:3005"
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -187,21 +184,20 @@ services:
       orchestrator:
         condition: service_started
     environment:
-      NODE_ENV: development
       RABBITMQ_URL: amqp://admin:admin123@rabbitmq:5672
-      ORDER_QUEUE: new_order_queue
-      EVENTS_EXCHANGE: events_exchange
       CMS_API_URL: http://cms-mock:3001
-      ORCHESTRATOR_URL: http://orchestrator:3001
+      LOG_LEVEL: INFO
     networks:
       - swiftlogistics-network
     restart: on-failure
 
   ros-adapter:
     build:
-      context: ./services/adapters/ros-adapter
-      dockerfile: Dockerfile
+      context: ./services
+      dockerfile: adapters/ros-adapter/Dockerfile
     container_name: swiftlogistics-ros-adapter
+    ports:
+      - "3006:3006"
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -210,21 +206,20 @@ services:
       orchestrator:
         condition: service_started
     environment:
-      NODE_ENV: development
       RABBITMQ_URL: amqp://admin:admin123@rabbitmq:5672
-      ORDER_QUEUE: new_order_queue
-      EVENTS_EXCHANGE: events_exchange
       ROS_API_URL: http://ros-mock:3003
-      ORCHESTRATOR_URL: http://orchestrator:3001
+      LOG_LEVEL: INFO
     networks:
       - swiftlogistics-network
     restart: on-failure
 
   wms-adapter:
     build:
-      context: ./services/adapters/wms-adapter
-      dockerfile: Dockerfile
+      context: ./services
+      dockerfile: adapters/wms-adapter/Dockerfile
     container_name: swiftlogistics-wms-adapter
+    ports:
+      - "3007:3007"
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -233,12 +228,9 @@ services:
       orchestrator:
         condition: service_started
     environment:
-      NODE_ENV: development
       RABBITMQ_URL: amqp://admin:admin123@rabbitmq:5672
-      ORDER_QUEUE: new_order_queue
-      EVENTS_EXCHANGE: events_exchange
       WMS_API_URL: http://wms-mock:3002
-      ORCHESTRATOR_URL: http://orchestrator:3001
+      LOG_LEVEL: INFO
     networks:
       - swiftlogistics-network
     restart: on-failure
