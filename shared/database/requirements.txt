@@ -1,0 +1,3 @@
+# MongoDB Python dependencies
+motor==3.3.2  # Async MongoDB driver
+pymongo==4.6.1  # MongoDB driver
