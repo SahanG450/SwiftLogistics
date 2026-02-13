@@ -1,4 +1,4 @@
-.PHONY: help build up down logs clean restart ps start-mocks stop-mocks logs-mocks health-mocks
+.PHONY: help build up down logs clean restart ps start-mocks stop-mocks logs-mocks health-mocks run-frontend install-frontend build-frontend run-backend run-backend-detached stop-backend run-all
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -163,6 +163,47 @@ quick-start: up health-mocks ## Quick start: build and start all services, then 
 	@echo ""
 	@echo "✅ SwiftLogistics is starting up!"
 	@echo "Run 'make status' to see all service URLs"
+
+# Frontend Commands
+run-frontend: ## Run the frontend development server
+	@echo "Starting frontend development server..."
+	cd frontend/swifttrack-logistics && npm run dev
+
+install-frontend: ## Install frontend dependencies
+	@echo "Installing frontend dependencies..."
+	cd frontend/swifttrack-logistics && npm install
+
+build-frontend: ## Build the frontend for production
+	@echo "Building frontend for production..."
+	cd frontend/swifttrack-logistics && npm run build
+
+# Backend Commands
+run-backend: ## Start all backend services using Docker Compose
+	@echo "Starting all backend services..."
+	docker-compose up --build
+
+run-backend-detached: ## Start all backend services in detached mode
+	@echo "Starting all backend services in background..."
+	docker-compose up --build -d
+
+stop-backend: ## Stop all backend services
+	@echo "Stopping all backend services..."
+	docker-compose down
+
+# Combined Commands
+run-all: ## Run both frontend and backend (backend in background, frontend in foreground)
+	@echo "Starting backend services in background..."
+	@make run-backend-detached
+	@echo "Waiting for services to be ready..."
+	@sleep 5
+	@echo ""
+	@echo "Starting frontend development server..."
+	@echo "Backend services are running at:"
+	@echo "  - API Gateway: http://localhost:3000"
+	@echo "  - RabbitMQ UI: http://localhost:15672"
+	@echo "  - MongoDB: http://localhost:27017"
+	@echo ""
+	@make run-frontend
 
 test-mocks: ## Test all mock services with sample requests
 	@echo "=== Testing Mock Services ==="
